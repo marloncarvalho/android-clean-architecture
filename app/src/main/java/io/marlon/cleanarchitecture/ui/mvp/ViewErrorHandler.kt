@@ -1,11 +1,14 @@
-package io.marlon.cleanarchitecture.ui.error
+package io.marlon.cleanarchitecture.ui.mvp
 
 import io.marlon.cleanarchitecture.data.remote.exception.NetworkError
 import io.marlon.cleanarchitecture.data.remote.exception.NetworkUnavailable
 import io.marlon.cleanarchitecture.domain.exception.DomainException
 import javax.inject.Inject
 
-class ErrorHandler @Inject constructor() {
+/**
+ * Handles common errors, like Network issues and domain exceptions.
+ */
+class ViewErrorHandler @Inject constructor() {
 
     fun handle(view: ErrorView, throwable: Throwable): Boolean {
         var result = false

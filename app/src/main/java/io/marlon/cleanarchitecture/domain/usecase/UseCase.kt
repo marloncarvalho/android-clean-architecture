@@ -1,55 +1,73 @@
 package io.marlon.cleanarchitecture.domain.usecase
 
-import br.gov.serpro.sne.domain.executor.PostExecutionThread
-import br.gov.serpro.sne.domain.executor.ThreadExecutor
+import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subscribers.DisposableSubscriber
-import timber.log.Timber
 
-abstract class UseCase<T, in Params>(
-        private val threadExecutor: ThreadExecutor,
-        private val postExecutionThread: PostExecutionThread) {
+abstract class UseCase<out Type, in Params> where Type : Any {
+    internal val disposables = CompositeDisposable()
 
-    private val disposables: CompositeDisposable = CompositeDisposable()
+    fun clear() = disposables.clear()
 
-    abstract fun doRun(params: Params? = null): Flowable<T>
+    abstract fun build(params: Params?): Type
 
-    open fun run(params: Params? = null, onError: (Throwable) -> Unit = {}, onNext: (T) -> Unit = {}, onComplete: () -> Unit = {}) {
-        Timber.d("Running UseCase!")
+    abstract class RxSingle<T, in P> : UseCase<Single<T>, P>() {
 
-        val observable = this.doRun(params)
-                .subscribeOn(Schedulers.from(threadExecutor))
-                .observeOn(postExecutionThread.scheduler)
+        fun execute(observer: UseCaseObserver.RxSingle<T>, params: P? = null) =
+                disposables.add(build(params)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(observer))
 
-        Timber.d("Adding Subscriber to Composite Disposable")
-        add(observable.subscribeWith(object : DisposableSubscriber<T>() {
-
-            override fun onComplete() {
-                Timber.d("Subscriber passing onComplete call to Lambda.")
-                onComplete.invoke()
-            }
-
-            override fun onError(t: Throwable) {
-                Timber.d("Subscriber passing onError call to Lambda.")
-                onError.invoke(t)
-            }
-
-            override fun onNext(t: T) {
-                Timber.d("Subscriber passing onNext call to Lambda.")
-                onNext.invoke(t)
-            }
-        }))
+        fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit, params: P? = null) =
+                disposables.add(build(params)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onSuccess, onError))
     }
 
-    open fun clear() {
-        disposables.clear()
+    abstract class RxObservable<T, in P> : UseCase<Observable<T>, P>() {
+        fun execute(observer: UseCaseObserver.RxObservable<T>, params: P? = null) =
+                disposables.add(build(params)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(observer))
+
+        fun execute(onNext: (T) -> Unit, onError: (Throwable) -> Unit, params: P? = null) {
+            disposables.add(build(params)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(onNext, onError))
+        }
     }
 
-    private fun add(disposable: Disposable) {
-        disposables.add(disposable)
+    abstract class RxFlowable<T, in P> : UseCase<Flowable<T>, P>() {
+        fun execute(subscriber: UseCaseObserver.RxFlowable<T>, params: P? = null) =
+                disposables.add(build(params)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(subscriber))
+
+        fun execute(onNext: (T) -> Unit, onError: (Throwable) -> Unit, params: P? = null) {
+            disposables.add(build(params)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(onNext, onError))
+        }
+    }
+
+    abstract class RxCompletable<in P> : UseCase<Completable, P>() {
+        fun execute(params: P? = null) = execute({}, params)
+
+        fun execute(onComplete: () -> Unit = {}, params: P? = null) =
+                disposables.add(build(params)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onComplete))
     }
 
 }

@@ -3,15 +3,14 @@ package io.marlon.cleanarchitecture.ui.mvp.user
 import io.marlon.cleanarchitecture.domain.exception.ModelNotFound
 import io.marlon.cleanarchitecture.domain.model.User
 import io.marlon.cleanarchitecture.domain.usecase.user.GetUserDetails
-import io.marlon.cleanarchitecture.domain.usecase.user.RxGetUserDetails
-import io.marlon.cleanarchitecture.ui.error.ErrorHandler
+import io.marlon.cleanarchitecture.ui.mvp.ViewErrorHandler
 import io.marlon.cleanarchitecture.ui.mvp.View
 import timber.log.Timber
 import javax.inject.Inject
 
 class UserPresenter @Inject constructor(
-        private val eh: ErrorHandler,
-        private val getUser: RxGetUserDetails) : UserContract.Presenter {
+        private val eh: ViewErrorHandler,
+        private val getUser: GetUserDetails) : UserContract.Presenter {
 
     lateinit var view: UserContract.View
 
@@ -43,8 +42,6 @@ class UserPresenter @Inject constructor(
         if (!eh.handle(view, throwable)) {
             if (throwable is ModelNotFound) {
                 view.showError("User not found.")
-            } else {
-                view.showStrangeErrorMessage()
             }
         }
     }

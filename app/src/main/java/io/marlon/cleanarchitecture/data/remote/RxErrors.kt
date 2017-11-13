@@ -9,6 +9,15 @@ import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
 
+/**
+ * Handles common HTTP Exceptions, throwing a more meaningful exception.
+ * It handles the errors below:
+ * 1. IOException when there's no internet connection.
+ * 2. Resource not found when http status code is 404.
+ * 3. Server errors when http status code is equals or greater than 500.
+ *
+ * TODO We need to refactor it. Too much repetitions here.
+ */
 class RxErrors {
 
     companion object {
@@ -37,11 +46,7 @@ class RxErrors {
                 val result = handleCommonErrors(throwable)
                 if (result != null) {
                     Maybe.error(result)
-                } else {
-                    maybe
-                }
-            }).onErrorResumeNext(Function { throwable ->
-                if (throwable is HttpException && throwable.code() == 401) {
+                } else if (throwable is HttpException && throwable.code() == 401) {
                     Timber.d("Not authorized to call remote service.")
                     retry()
                     Maybe.error(throwable)
@@ -56,11 +61,7 @@ class RxErrors {
                 val result = handleCommonErrors(throwable)
                 if (result != null) {
                     Flowable.error(result)
-                } else {
-                    flowable
-                }
-            }).onErrorResumeNext(Function { throwable ->
-                if (throwable is HttpException && throwable.code() == 401) {
+                } else if (throwable is HttpException && throwable.code() == 401) {
                     Timber.d("Not authorized to call remote service.")
                     retry()
                     Flowable.error(throwable)
@@ -75,11 +76,7 @@ class RxErrors {
                 val result = handleCommonErrors(throwable)
                 if (result != null) {
                     Observable.error(result)
-                } else {
-                    observable
-                }
-            }).onErrorResumeNext(Function { throwable ->
-                if (throwable is HttpException && throwable.code() == 401) {
+                } else if (throwable is HttpException && throwable.code() == 401) {
                     Timber.d("Not authorized to call remote service.")
                     retry()
                     Observable.error(throwable)
@@ -94,11 +91,7 @@ class RxErrors {
                 val result = handleCommonErrors(throwable)
                 if (result != null) {
                     Single.error(result)
-                } else {
-                    single
-                }
-            }).onErrorResumeNext({ throwable ->
-                if (throwable is HttpException && throwable.code() == 401) {
+                } else if (throwable is HttpException && throwable.code() == 401) {
                     Timber.d("Not authorized to call remote service.")
                     retry()
                     Single.error(throwable)

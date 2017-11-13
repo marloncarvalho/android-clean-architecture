@@ -1,33 +1,31 @@
-package io.marlon.cleanarchitecture.ui.mvp.user
+package io.marlon.cleanarchitecture.ui.mvp.login
 
 import android.os.Bundle
 import android.widget.ProgressBar
 import dagger.android.support.DaggerAppCompatActivity
 import io.marlon.cleanarchitecture.R
-import io.marlon.cleanarchitecture.domain.model.User
-import kotlinx.android.synthetic.main.activity_user_details.*
+import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.toast
-import timber.log.Timber
 import javax.inject.Inject
 
-class UserActivity : DaggerAppCompatActivity(), UserContract.View {
+class LoginActivity : DaggerAppCompatActivity(), LoginContract.View {
     override val progressBar: ProgressBar by lazy { this.pBar }
 
     @Inject
-    lateinit var presenter: UserContract.Presenter
+    lateinit var presenter: LoginContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user_details)
+        setContentView(R.layout.activity_login)
 
         presenter.attach(this)
         presenter.bootstrap()
 
-        btnLoad.onClick {
-            Timber.d("Load User Click")
-            presenter.loadUser(etLogin.text.toString())
+        btnSignIn.onClick {
+            presenter.login(etLogin.text.toString(), etPassword.text.toString())
         }
+
     }
 
     override fun onDestroy() {
@@ -37,11 +35,6 @@ class UserActivity : DaggerAppCompatActivity(), UserContract.View {
 
     override fun showError(message: String) {
         toast(message)
-    }
-
-    override fun showUser(user: User) {
-        etName.setText(user.name)
-        etLogin.setText(user.login)
     }
 
 }
