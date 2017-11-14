@@ -31,7 +31,7 @@ class UserObjectBoxRepository @Inject constructor(boxStore: BoxStore) : UserRepo
         }
     }
 
-    override fun login(login: String?, password: String?): Single<User> {
+    override fun login(login: String?, password: String?): Single<String> {
         throw NotImplementedError()
     }
 

@@ -10,7 +10,9 @@ class Login @Inject constructor(
         private val userRepository: UserRepository) : UseCase.RxSingle<User, Login.Param>() {
 
     override fun build(login: Param?): Single<User> {
-        return userRepository.login(login?.login, login?.password)
+        return userRepository
+                .login(login?.login, login?.password)
+                .map { User() }
     }
 
     class Param() {

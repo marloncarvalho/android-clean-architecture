@@ -1,5 +1,6 @@
 package io.marlon.cleanarchitecture.data.remote
 
+import android.util.Base64
 import io.marlon.cleanarchitecture.data.converter.UserRemoteConverter
 import io.marlon.cleanarchitecture.data.remote.api.services.user.UserAPI
 import io.marlon.cleanarchitecture.domain.model.User
@@ -24,8 +25,9 @@ class UserRemoteRepository @Inject constructor(
         }).toFlowable()
     }
 
-    override fun login(login: String?, password: String?): Single<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun login(login: String?, password: String?): Single<String> {
+        var base64 = Base64.encode("$login:$password".toByteArray(Charsets.UTF_8), Base64.DEFAULT).toString()
+        return userAPI.login("Basic $base64")
     }
 
 }

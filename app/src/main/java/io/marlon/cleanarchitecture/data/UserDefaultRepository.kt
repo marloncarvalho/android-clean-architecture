@@ -13,8 +13,8 @@ class UserDefaultRepository @Inject constructor(
         private val dbRepository: UserObjectBoxRepository,
         private val remoteRepository: UserRemoteRepository) : UserRepository {
 
-    override fun login(login: String?, password: String?): Single<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun login(login: String?, password: String?): Single<String> {
+        return remoteRepository.login(login, password)
     }
 
     override fun save(user: User): Single<User> {

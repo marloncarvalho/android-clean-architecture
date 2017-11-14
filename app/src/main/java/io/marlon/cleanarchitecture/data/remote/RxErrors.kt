@@ -1,7 +1,7 @@
 package io.marlon.cleanarchitecture.data.remote
 
 import io.marlon.cleanarchitecture.data.remote.exception.NetworkError
-import io.marlon.cleanarchitecture.data.remote.exception.NetworkUnavailable
+import io.marlon.cleanarchitecture.data.remote.exception.NetworkUnavailableException
 import io.marlon.cleanarchitecture.data.remote.exception.ResourceNotFoundException
 import io.reactivex.*
 import io.reactivex.functions.Function
@@ -120,7 +120,7 @@ class RxErrors {
             var result: Throwable = exception
 
             if (exception is IOException) {
-                result = NetworkUnavailable("No Internet Connection")
+                result = NetworkUnavailableException("No Internet Connection")
             }
 
             return result
