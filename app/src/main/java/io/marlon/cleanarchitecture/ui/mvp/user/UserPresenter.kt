@@ -1,18 +1,18 @@
 package io.marlon.cleanarchitecture.ui.mvp.user
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.OnLifecycleEvent
 import io.marlon.cleanarchitecture.domain.exception.ModelNotFound
 import io.marlon.cleanarchitecture.domain.model.User
 import io.marlon.cleanarchitecture.domain.usecase.user.GetUserDetails
+import io.marlon.cleanarchitecture.ui.mvp.BasePresenter
 import io.marlon.cleanarchitecture.ui.mvp.ViewErrorHandler
-import io.marlon.cleanarchitecture.ui.mvp.View
 import timber.log.Timber
 import javax.inject.Inject
 
 class UserPresenter @Inject constructor(
         private val eh: ViewErrorHandler,
-        private val getUser: GetUserDetails) : UserContract.Presenter {
-
-    lateinit var view: UserContract.View
+        private val getUser: GetUserDetails) : BasePresenter<UserContract.View>(), UserContract.Presenter {
 
     override fun loadUser(user: String) {
         view.showLoading()
@@ -23,15 +23,14 @@ class UserPresenter @Inject constructor(
         )
     }
 
-    override fun attach(view: View) {
-        this.view = view as UserContract.View
-    }
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     override fun destroy() {
         getUser.clear()
     }
 
-    override fun bootstrap() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    override fun init() {
+        Timber.d("Initializing View. OnResume event.")
     }
 
     private fun onGetUserError(throwable: Throwable) {
@@ -47,7 +46,7 @@ class UserPresenter @Inject constructor(
     }
 
     private fun onGetUser(user: User) {
-        Timber.d("OnNext -> User found: ${user.login}, ${user.name}, ${user.id}")
+        Timber.d("OnNext -> Presenter got an user! ${user.login}, ${user.name}, ${user.id}")
         view.showUser(user!!)
         view.hideLoading()
     }

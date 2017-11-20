@@ -1,7 +1,7 @@
 package io.marlon.cleanarchitecture.domain.usecase.login
 
+import io.marlon.cleanarchitecture.data.UserRepository
 import io.marlon.cleanarchitecture.domain.model.User
-import io.marlon.cleanarchitecture.domain.repository.UserRepository
 import io.marlon.cleanarchitecture.domain.usecase.UseCase
 import io.reactivex.Single
 import javax.inject.Inject

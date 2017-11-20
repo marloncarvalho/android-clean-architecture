@@ -1,3 +1,10 @@
 package io.marlon.cleanarchitecture.ui.mvp
 
-interface View
+interface View {
+
+    fun init(presenter: Presenter<View>) {
+        presenter.attach(this)
+        presenter.init()
+    }
+
+}

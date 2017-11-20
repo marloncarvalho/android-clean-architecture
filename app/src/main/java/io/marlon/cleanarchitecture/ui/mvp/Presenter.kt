@@ -1,7 +1,9 @@
 package io.marlon.cleanarchitecture.ui.mvp
 
-interface Presenter {
-    fun attach(view: View)
+import android.arch.lifecycle.LifecycleObserver
+
+interface Presenter<in V : View> : LifecycleObserver {
+    fun attach(view: V)
     fun destroy()
-    fun bootstrap()
+    fun init()
 }

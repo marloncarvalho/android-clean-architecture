@@ -16,8 +16,7 @@ import javax.inject.Singleton
                 AndroidBindings::class,
                 PresenterModule::class,
                 ActivityModule::class,
-                APIModule::class,
-                RepositoryModule::class
+                APIModule::class
 
         )
 )

@@ -5,7 +5,7 @@ import io.marlon.cleanarchitecture.ui.mvp.LoadingView
 
 interface LoginContract {
 
-    interface Presenter : io.marlon.cleanarchitecture.ui.mvp.Presenter {
+    interface Presenter : io.marlon.cleanarchitecture.ui.mvp.Presenter<View> {
         fun login(username: String, password: String)
     }
 

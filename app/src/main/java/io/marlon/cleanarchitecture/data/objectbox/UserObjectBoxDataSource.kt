@@ -1,19 +1,23 @@
-package io.marlon.cleanarchitecture.data.database
+package io.marlon.cleanarchitecture.data.objectbox
 
+import io.marlon.cleanarchitecture.domain.datasource.UserDataSource
 import io.marlon.cleanarchitecture.domain.model.User
 import io.marlon.cleanarchitecture.domain.model.User_
-import io.marlon.cleanarchitecture.domain.repository.UserRepository
+import io.marlon.cleanarchitecture.internal.di.qualifier.ObjectBox
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.reactivex.Flowable
 import io.reactivex.Single
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Repository for managing users in ObjectBox.
  */
-class UserObjectBoxRepository @Inject constructor(boxStore: BoxStore) : UserRepository {
+@ObjectBox
+@Singleton
+class UserObjectBoxDataSource @Inject constructor(boxStore: BoxStore) : UserDataSource {
     var box: Box<User> = boxStore.boxFor(User::class.java)
 
     override fun save(user: User): Single<User> {
@@ -32,7 +36,7 @@ class UserObjectBoxRepository @Inject constructor(boxStore: BoxStore) : UserRepo
     }
 
     override fun login(login: String?, password: String?): Single<String> {
-        throw NotImplementedError()
+        throw UnsupportedOperationException()
     }
 
 }

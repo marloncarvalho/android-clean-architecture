@@ -20,7 +20,7 @@ class LoginActivity : DaggerAppCompatActivity(), LoginContract.View {
         setContentView(R.layout.activity_login)
 
         presenter.attach(this)
-        presenter.bootstrap()
+        presenter.init()
 
         btnSignIn.onClick {
             presenter.login(etLogin.text.toString(), etPassword.text.toString())

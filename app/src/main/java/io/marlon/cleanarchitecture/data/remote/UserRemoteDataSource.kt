@@ -3,19 +3,23 @@ package io.marlon.cleanarchitecture.data.remote
 import android.util.Base64
 import io.marlon.cleanarchitecture.data.converter.UserRemoteConverter
 import io.marlon.cleanarchitecture.data.remote.api.services.user.UserAPI
+import io.marlon.cleanarchitecture.domain.datasource.UserDataSource
 import io.marlon.cleanarchitecture.domain.model.User
-import io.marlon.cleanarchitecture.domain.repository.UserRepository
+import io.marlon.cleanarchitecture.internal.di.qualifier.Remote
 import io.reactivex.Flowable
 import io.reactivex.Single
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class UserRemoteRepository @Inject constructor(
+@Remote
+@Singleton
+class UserRemoteDataSource @Inject constructor(
         private val converter: UserRemoteConverter,
-        private val userAPI: UserAPI) : UserRepository {
+        private val userAPI: UserAPI) : UserDataSource {
 
     override fun save(user: User): Single<User> {
-        throw NotImplementedError()
+        throw UnsupportedOperationException()
     }
 
     override fun find(username: String): Flowable<User> {

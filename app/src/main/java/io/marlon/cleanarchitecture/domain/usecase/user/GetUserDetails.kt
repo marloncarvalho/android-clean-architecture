@@ -1,9 +1,9 @@
 package io.marlon.cleanarchitecture.domain.usecase.user
 
+import io.marlon.cleanarchitecture.data.UserRepository
 import io.marlon.cleanarchitecture.data.remote.exception.ResourceNotFoundException
 import io.marlon.cleanarchitecture.domain.exception.ModelNotFound
 import io.marlon.cleanarchitecture.domain.model.User
-import io.marlon.cleanarchitecture.domain.repository.UserRepository
 import io.marlon.cleanarchitecture.domain.usecase.UseCase
 import io.reactivex.Flowable
 import io.reactivex.functions.Function
