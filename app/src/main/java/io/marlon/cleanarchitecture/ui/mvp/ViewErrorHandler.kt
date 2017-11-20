@@ -1,6 +1,7 @@
 package io.marlon.cleanarchitecture.ui.mvp
 
 import android.content.Context
+import io.marlon.cleanarchitecture.R
 import io.marlon.cleanarchitecture.data.remote.exception.NetworkError
 import io.marlon.cleanarchitecture.data.remote.exception.NetworkUnavailableException
 import io.marlon.cleanarchitecture.domain.exception.DomainException
@@ -16,15 +17,15 @@ class ViewErrorHandler @Inject constructor(val context: Context) {
 
         when (throwable) {
             is NetworkError -> {
-                view.showError("Our servers are upset and don't want to talk with us right now. Please, try again later.")
+                view.showError(context.getString(R.string.generic_error_network_error))
                 result = true
             }
             is NetworkUnavailableException -> {
-                view.showError("Oops! Are you sure your internet connection is okay?")
+                view.showError(context.getString(R.string.generic_error_no_internet))
                 result = true
             }
             !is DomainException -> {
-                view.showError("Ooops! Something really strange happened and we don't know what it is. Try again later!")
+                view.showError(context.getString(R.string.generic_error_unknown))
                 result = true
             }
         }

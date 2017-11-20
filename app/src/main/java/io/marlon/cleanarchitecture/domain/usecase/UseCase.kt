@@ -37,11 +37,11 @@ abstract class UseCase<out Type, in Params> where Type : Any {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(observer))
 
-        fun execute(onNext: (T) -> Unit, onError: (Throwable) -> Unit, params: P? = null) {
+        fun execute(onNext: (T) -> Unit, onError: (Throwable) -> Unit, onComplete: () -> Unit = {}, params: P? = null) {
             disposables.add(build(params)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(onNext, onError))
+                    .subscribe(onNext, onError, onComplete))
         }
     }
 
@@ -52,11 +52,11 @@ abstract class UseCase<out Type, in Params> where Type : Any {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(subscriber))
 
-        fun execute(onNext: (T) -> Unit, onError: (Throwable) -> Unit, params: P? = null) {
+        fun execute(onNext: (T) -> Unit, onError: (Throwable) -> Unit, onComplete: () -> Unit = {}, params: P? = null) {
             disposables.add(build(params)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(onNext, onError))
+                    .subscribe(onNext, onError, onComplete))
         }
     }
 

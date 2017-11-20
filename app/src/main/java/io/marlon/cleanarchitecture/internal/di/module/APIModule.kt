@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import io.marlon.cleanarchitecture.data.remote.api.interceptor.APIVersionInterceptor
 import io.marlon.cleanarchitecture.data.remote.api.interceptor.JWTInterceptor
+import io.marlon.cleanarchitecture.data.remote.api.services.repo.RepoAPI
 import io.marlon.cleanarchitecture.data.remote.api.services.user.UserAPI
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -39,8 +40,9 @@ class APIModule {
     }
 
     @Provides
-    fun provideUserAPI(retrofit: Retrofit): UserAPI {
-        return retrofit.create(UserAPI::class.java)
-    }
+    fun provideUserAPI(retrofit: Retrofit): UserAPI = retrofit.create(UserAPI::class.java)
+
+    @Provides
+    fun provideRepoAPI(retrofit: Retrofit): RepoAPI = retrofit.create(RepoAPI::class.java)
 
 }

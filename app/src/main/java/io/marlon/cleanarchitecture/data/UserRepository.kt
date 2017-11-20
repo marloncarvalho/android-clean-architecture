@@ -1,17 +1,17 @@
 package io.marlon.cleanarchitecture.data
 
-import io.marlon.cleanarchitecture.data.objectbox.UserObjectBoxDataSource
-import io.marlon.cleanarchitecture.data.remote.UserRemoteDataSource
 import io.marlon.cleanarchitecture.domain.datasource.UserDataSource
 import io.marlon.cleanarchitecture.domain.model.User
+import io.marlon.cleanarchitecture.internal.di.qualifier.ObjectBox
+import io.marlon.cleanarchitecture.internal.di.qualifier.Remote
 import io.reactivex.Flowable
 import io.reactivex.Single
 import timber.log.Timber
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
-        private val objectBoxDataSource: UserObjectBoxDataSource,
-        private val remoteDataSource: UserRemoteDataSource) : UserDataSource {
+        @ObjectBox private val objectBoxDataSource: UserDataSource,
+        @Remote private val remoteDataSource: UserDataSource) : UserDataSource {
 
     override fun login(login: String?, password: String?): Single<String> =
             remoteDataSource.login(login, password)

@@ -26,9 +26,25 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:2684825403369300476",
+      "lastPropertyId": "2:3147344686293942801",
+      "name": "Repo",
+      "properties": [
+        {
+          "id": "1:1017706729790916870",
+          "name": "id"
+        },
+        {
+          "id": "2:3147344686293942801",
+          "name": "name"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:7329086860674453090",
+  "lastEntityId": "2:2684825403369300476",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

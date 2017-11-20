@@ -16,9 +16,7 @@ import javax.inject.Inject
 open class App : MultiDexApplication(), HasActivityInjector {
     @Inject lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
-    override fun activityInjector(): AndroidInjector<Activity> {
-        return activityInjector
-    }
+    override fun activityInjector(): AndroidInjector<Activity> = activityInjector
 
     private val appComponent: AppComponent by lazy {
         DaggerAppComponent
