@@ -22,6 +22,7 @@ class UseCaseObserver {
         override fun onComplete() {}
         override fun onNext(value: T) {}
         override fun onError(e: Throwable) {}
+        override fun onStart() {}
     }
 
     open class RxMaybe<T> : DisposableMaybeObserver<T>() {

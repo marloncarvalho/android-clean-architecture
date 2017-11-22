@@ -4,7 +4,8 @@ import io.marlon.cleanarchitecture.domain.datasource.RepoDataSource
 import io.marlon.cleanarchitecture.domain.model.Repo
 import io.marlon.cleanarchitecture.internal.di.qualifier.ObjectBox
 import io.marlon.cleanarchitecture.internal.di.qualifier.Remote
-import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -17,14 +18,17 @@ class RepoRepository @Inject constructor(
         objectBox.save(list)
     }
 
-    override fun getRepos(username: String): Flowable<List<Repo>> {
-        val local = objectBox.getRepos(username)
+    override fun getRepos(username: String): Observable<List<Repo>> {
+        val local = objectBox.getRepos(username).doOnNext {
+            Timber.d("DoOnNext ObjectBox Got Repos: ${it.count()}")
+        }.subscribeOn(Schedulers.io())
+
         val remote = remote.getRepos(username).doOnNext { repos ->
             Timber.d("Saving Repos to ObjectBox.")
             save(repos)
-        }
+        }.subscribeOn(Schedulers.io())
 
-        return Flowable.concat(local, remote)
+        return Observable.concat(local, remote)
     }
 
 }

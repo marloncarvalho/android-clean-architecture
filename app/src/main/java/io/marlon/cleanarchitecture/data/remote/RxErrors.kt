@@ -116,10 +116,10 @@ class RxErrors {
         }
 
         private fun handleOtherExceptions(exception: Throwable): Throwable {
-            Timber.d("IOException. No Internet connection")
             var result: Throwable = exception
 
             if (exception is IOException) {
+                Timber.d("IOException. No Internet connection")
                 result = NetworkUnavailableException("No Internet Connection")
             }
 

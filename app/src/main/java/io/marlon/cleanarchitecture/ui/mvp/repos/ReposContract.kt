@@ -8,6 +8,7 @@ interface ReposContract {
 
     interface View : io.marlon.cleanarchitecture.ui.mvp.View, ErrorView, LoadingView {
         fun showRepos(repos: List<Repo>)
+        fun noDataToShow()
     }
 
     interface Presenter : io.marlon.cleanarchitecture.ui.mvp.Presenter<View> {
