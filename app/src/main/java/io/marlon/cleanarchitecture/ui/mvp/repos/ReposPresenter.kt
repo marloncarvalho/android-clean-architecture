@@ -1,7 +1,6 @@
 package io.marlon.cleanarchitecture.ui.mvp.repos
 
 import io.marlon.cleanarchitecture.domain.model.Repo
-import io.marlon.cleanarchitecture.domain.usecase.UseCaseObserver
 import io.marlon.cleanarchitecture.domain.usecase.repo.GetRepos
 import io.marlon.cleanarchitecture.ui.mvp.BasePresenter
 import io.marlon.cleanarchitecture.ui.mvp.ViewErrorHandler
@@ -32,7 +31,10 @@ open class ReposPresenter @Inject constructor(
     }
 
     private fun onErrorGetRepos(throwable: Throwable) {
-        eh.handle(view, throwable)
+        if (!eh.handle(view, throwable)) {
+            view.noDataToShow()
+        }
+
         view.hideLoading()
     }
 
@@ -44,34 +46,12 @@ open class ReposPresenter @Inject constructor(
     override fun refreshRepos() {
         view.showLoading()
 
-        getRepos.execute(object : UseCaseObserver.RxObservable<List<Repo>>() {
-
-            override fun onComplete() {
-                Timber.d("OnComplete")
-                onCompleteGetRepos()
-            }
-
-            override fun onNext(value: List<Repo>) {
-                Timber.d("OnNext: ${value.count()}")
-                onNextGetRepos(value)
-            }
-
-            override fun onError(e: Throwable) {
-                Timber.d("OnError: ${e}")
-                onErrorGetRepos(e)
-            }
-
-            override fun onStart() {
-                Timber.d("OnStart")
-            }
-
-        }, "marloncarvalho")
-//        getRepos.execute(
-//                params = "marloncarvalho",
-//                onNext = { onNextGetRepos(it) },
-//                onError = { onErrorGetRepos(it) },
-//                onComplete = { onCompleteGetRepos() }
-//        )
+        getRepos.execute(
+                params = "marloncarvalho",
+                onNext = { onNextGetRepos(it) },
+                onError = { onErrorGetRepos(it) },
+                onComplete = { onCompleteGetRepos() }
+        )
     }
 
 }
